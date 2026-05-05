@@ -75,7 +75,7 @@ These enhance the experience but users still get full value without them.
 ### Week 3 — Ship
 - Public profile page (AtlasMe Captured) — shareable URL, no login required to view
 - Mobile responsiveness
-- Deployment (Render + Supabase)
+- Deployment (Render + NeonDB)
 - UI polish
 - *Bonus if time allows:* dark mode, pin notes/date editing
 
@@ -103,7 +103,7 @@ These enhance the experience but users still get full value without them.
 | Database | PostgreSQL + Prisma ORM |
 | Auth | JWT, bcrypt |
 | Map | Mapbox GL JS (monochrome style + Geocoding API) |
-| Deployment | Render (frontend + backend), Supabase (PostgreSQL) |
+| Deployment | Render (frontend + backend), NeonDB (PostgreSQL) |
 
 ---
 

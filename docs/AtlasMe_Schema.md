@@ -2,7 +2,7 @@
 
 **Database:** PostgreSQL
 **ORM:** Sequelize
-**Hosting:** Supabase (free tier)
+**Hosting:** NeonDB (free tier)
 
 ---
 
@@ -255,7 +255,7 @@ const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialectOptions: {
     ssl: {
       require: true,
-      rejectUnauthorized: false,   // required for Supabase
+      rejectUnauthorized: false,   
     },
   },
   logging: false,                  // set to console.log to debug queries

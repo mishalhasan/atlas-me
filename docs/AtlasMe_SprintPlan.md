@@ -61,7 +61,7 @@
   - Basic `server.js` with health check route `GET /api/health`
   - Confirm server runs on `localhost:5000`
 - [ ] Story 0: Connect database
-  - Set up Supabase project, copy connection string
+  - Set up NEONDB project, copy connection string
   - Configure Sequelize with DATABASE_URL from `.env`
   - Confirm connection on server start
   - Deploy backend to Render (early deployment — don't leave this to week 3)

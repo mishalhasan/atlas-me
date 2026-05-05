@@ -8,12 +8,12 @@
 
 ## Sprint Overview
 
-| Sprint | Focus | Stories | Est. Time |
-|--------|-------|---------|-----------|
-| Sprint 1 — Week 1 | Backend + DB + Map foundation | 0, 1BE, 2BE, 3, 5BE, 6BE, 7BE, 8BE, 17 | ~18 hrs |
-| Sprint 2 — Week 2 | Frontend + integration | 1FE, 2FE, 4, 9, 10, 11 | ~18 hrs |
-| Sprint 3 — Week 3 | Polish + custom features + deploy | 12, 13, 14, 15, 16, 18 | ~14 hrs |
-| Buffer — Week 4 | Overflow, polish, nice-to-haves | — | — |
+| Sprint            | Focus                             | Stories                                | Est. Time |
+| ----------------- | --------------------------------- | -------------------------------------- | --------- |
+| Sprint 1 — Week 1 | Backend + DB + Map foundation     | 0, 1BE, 2BE, 3, 5BE, 6BE, 7BE, 8BE, 17 | ~18 hrs   |
+| Sprint 2 — Week 2 | Frontend + integration            | 1FE, 2FE, 4, 9, 10, 11                 | ~18 hrs   |
+| Sprint 3 — Week 3 | Polish + custom features + deploy | 12, 13, 14, 15, 16, 18                 | ~14 hrs   |
+| Buffer — Week 4   | Overflow, polish, nice-to-haves   | —                                      | —         |
 
 ---
 
@@ -28,6 +28,7 @@ I want to connect PostgreSQL to the Express server,
 So that I can store and retrieve user and pin data.
 
 Acceptance Criteria:
+
 - [ ] Server.js imports and configures Prisma client
 - [ ] Database connection string loaded from `.env`
 - [ ] Connection established when server starts
@@ -49,6 +50,7 @@ I want to create an AtlasMe account with a username, email and password,
 So that I can save my travel pins and access my personal map.
 
 Acceptance Criteria:
+
 - [ ] User can enter username, email and password on register form
 - [ ] Email format validated (must contain @ and domain)
 - [ ] Username validated (3-20 characters, alphanumeric)
@@ -71,6 +73,7 @@ I want to log in with my email and password,
 So that I can access my map and travel data.
 
 Acceptance Criteria:
+
 - [ ] User can enter email and password on login form
 - [ ] Credentials validated against database
 - [ ] Password compared using bcrypt
@@ -95,6 +98,7 @@ I want to verify authentication on all private API routes,
 So that only authenticated users can access or modify their data.
 
 Acceptance Criteria:
+
 - [ ] Auth middleware checks for valid JWT token on every protected route
 - [ ] Middleware extracts user ID from token and attaches to request
 - [ ] Returns 401 if token is missing
@@ -116,6 +120,7 @@ I want to be redirected to login if I'm not authenticated,
 So that my map and travel data stays private.
 
 Acceptance Criteria:
+
 - [ ] `ProtectedRoute` component checks for token in AuthContext
 - [ ] Unauthenticated users redirected to `/` from any protected route
 - [ ] `/map`, `/stats`, `/onboarding` are all protected
@@ -142,6 +147,7 @@ I want to drop a pin on the map by searching a city or country,
 So that I can mark places I've visited or want to visit.
 
 Acceptance Criteria:
+
 - [ ] `POST /api/pins` accepts authenticated requests
 - [ ] Request body validated — name, latitude, longitude, type required
 - [ ] Type must be either `visited` or `wishlist`
@@ -166,6 +172,7 @@ I want my pins to load when I open the map,
 So that I can see all my visited and wishlist places.
 
 Acceptance Criteria:
+
 - [ ] `GET /api/pins` accepts authenticated requests
 - [ ] Returns only pins belonging to the authenticated user
 - [ ] Pins returned as two arrays — visited and wishlist
@@ -189,6 +196,7 @@ I want to change a pin from visited to wishlist or vice versa,
 So that I can update my map when my travel plans change.
 
 Acceptance Criteria:
+
 - [ ] `PUT /api/pins/:id` accepts authenticated requests
 - [ ] User can only update their own pins — returns 403 otherwise
 - [ ] Only the `type` field is updated (visited ↔ wishlist)
@@ -211,6 +219,7 @@ I want to delete a pin from my map,
 So that I can remove places I no longer want to track.
 
 Acceptance Criteria:
+
 - [ ] `DELETE /api/pins/:id` accepts authenticated requests
 - [ ] User can only delete their own pins — returns 403 otherwise
 - [ ] Returns 404 if pin doesn't exist
@@ -237,6 +246,7 @@ I want to see my full screen interactive map with all my pins,
 So that I can visualise my travels at a glance.
 
 Acceptance Criteria:
+
 - [ ] Mapbox monochrome map renders full screen on `/map`
 - [ ] Visited pins render as filled amber circles
 - [ ] Wishlist pins render as hollow outlined circles
@@ -264,6 +274,7 @@ I want to search for any city or country and drop a pin there,
 So that I can quickly add places without manually finding them on the map.
 
 Acceptance Criteria:
+
 - [ ] Search bar visible on map page and onboarding
 - [ ] Typing triggers Mapbox Geocoding API (debounced)
 - [ ] Dropdown shows matching results with region label
@@ -287,6 +298,7 @@ I want to be guided to add my first travel pins right after registering,
 So that my map isn't empty when I first arrive.
 
 Acceptance Criteria:
+
 - [ ] Onboarding page shown automatically after registration
 - [ ] Screen 1 shows popular country chips and nearby chips via geolocation
 - [ ] Chips toggle selected state with amber highlight on tap
@@ -312,6 +324,7 @@ I want to see my travel stats and personality type,
 So that I can understand my travel identity and share it.
 
 Acceptance Criteria:
+
 - [ ] Stats page accessible via drawer nav at `/stats`
 - [ ] Personality type displayed in Playfair Display at top
 - [ ] Personalized headline uses real countries and continents count
@@ -337,6 +350,7 @@ I want to view someone's AtlasMe Captured profile without logging in,
 So that I can see their travel identity and be inspired to join.
 
 Acceptance Criteria:
+
 - [ ] Page accessible at `/captured/:username` with no authentication
 - [ ] Fetches from `GET /api/public/:username` on mount
 - [ ] Mini map hero renders user's pins on dark monochrome background
@@ -361,6 +375,7 @@ I want to log out of AtlasMe,
 So that my account is secure when I'm done.
 
 Acceptance Criteria:
+
 - [ ] Logout button visible in drawer
 - [ ] Clicking logout removes token from localStorage
 - [ ] AuthContext cleared on logout
@@ -386,6 +401,7 @@ I want to be assigned a travel personality type based on my pins,
 So that I get a meaningful identity that reflects how I travel.
 
 Acceptance Criteria:
+
 - [ ] Personality type derived from countries visited and continents count
 - [ ] Five types implemented with defined rules:
   - 0–2 countries → The Homebody
@@ -412,6 +428,7 @@ I want to be suggested an inspiring destination I haven't visited yet,
 So that I can discover new places to add to my wishlist.
 
 Acceptance Criteria:
+
 - [ ] Next destination card displayed on Stats page
 - [ ] Suggestion drawn from curated list of ~50 popular destinations first
 - [ ] Filters out countries already in user's visited or wishlist pins
@@ -436,6 +453,7 @@ I want to serve a public endpoint for each user's Captured profile,
 So that anyone can view a user's travel identity without logging in.
 
 Acceptance Criteria:
+
 - [ ] `GET /api/public/:username` requires no authentication
 - [ ] Returns username, visited pins, wishlist pins
 - [ ] Derived stats computed server-side — countries, continents, % of world, total pins, top region
@@ -458,6 +476,7 @@ I want to see a shareable travel identity card,
 So that I'm inspired by their travels and motivated to join AtlasMe.
 
 Acceptance Criteria:
+
 - [ ] Page fetches from `GET /api/public/:username` on mount
 - [ ] Mini map hero renders user's pins on dark monochrome background
 - [ ] Personality type displayed in Playfair Display
@@ -477,36 +496,37 @@ Status: Not Started
 
 ## Story Status Tracker
 
-| Story | Title | Sprint | Est. Time | Status |
-|-------|-------|--------|-----------|--------|
-| 0 | Connect Database | 1 | 0.5 hrs | Not Started |
-| 1 | User Registration | 1+2 | 3-4 hrs | Not Started |
-| 2 | User Login | 1+2 | 3-4 hrs | Not Started |
-| 3 | Protected Routes (Backend) | 1 | 2-3 hrs | Not Started |
-| 4 | Protected Routes (Frontend) | 2 | 2 hrs | Not Started |
-| 5 | Add a Pin | 1+2 | 3-4 hrs | Not Started |
-| 6 | Load Pins | 1+2 | 2-3 hrs | Not Started |
-| 7 | Toggle Pin Type | 1+2 | 2-3 hrs | Not Started |
-| 8 | Delete a Pin | 1+2 | 2 hrs | Not Started |
-| 9 | Map Page | 2 | 6-8 hrs | Not Started |
-| 10 | Location Search | 2 | 3-4 hrs | Not Started |
-| 11 | Onboarding Flow | 2 | 4-5 hrs | Not Started |
-| 12 | Stats & Personality Page | 3 | 3-4 hrs | Not Started |
-| 13 | AtlasMe Captured Page | 3 | 3-4 hrs | Not Started |
-| 14 | Logout | 3 | 1 hr | Not Started |
-| 15 | Travel Personality Engine | 3 | 2 hrs | Not Started |
-| 16 | Next Destination Generator | 3 | 2 hrs | Not Started |
-| 17 | Public Profile API | 1 | 2 hrs | Not Started |
-| 18 | Captured Public Profile Page | 3 | 3 hrs | Not Started |
-| | **Total** | | **~50 hrs** | |
+| Story | Title                        | Sprint | Est. Time   | Status      |
+| ----- | ---------------------------- | ------ | ----------- | ----------- |
+| 0     | Connect Database             | 1      | 0.5 hrs     | Not Started |
+| 1     | User Registration            | 1+2    | 3-4 hrs     | Not Started |
+| 2     | User Login                   | 1+2    | 3-4 hrs     | Not Started |
+| 3     | Protected Routes (Backend)   | 1      | 2-3 hrs     | Not Started |
+| 4     | Protected Routes (Frontend)  | 2      | 2 hrs       | Not Started |
+| 5     | Add a Pin                    | 1+2    | 3-4 hrs     | Not Started |
+| 6     | Load Pins                    | 1+2    | 2-3 hrs     | Not Started |
+| 7     | Toggle Pin Type              | 1+2    | 2-3 hrs     | Not Started |
+| 8     | Delete a Pin                 | 1+2    | 2 hrs       | Not Started |
+| 9     | Map Page                     | 2      | 6-8 hrs     | Not Started |
+| 10    | Location Search              | 2      | 3-4 hrs     | Not Started |
+| 11    | Onboarding Flow              | 2      | 4-5 hrs     | Not Started |
+| 12    | Stats & Personality Page     | 3      | 3-4 hrs     | Not Started |
+| 13    | AtlasMe Captured Page        | 3      | 3-4 hrs     | Not Started |
+| 14    | Logout                       | 3      | 1 hr        | Not Started |
+| 15    | Travel Personality Engine    | 3      | 2 hrs       | Not Started |
+| 16    | Next Destination Generator   | 3      | 2 hrs       | Not Started |
+| 17    | Public Profile API           | 1      | 2 hrs       | Not Started |
+| 18    | Captured Public Profile Page | 3      | 3 hrs       | Not Started |
+|       | **Total**                    |        | **~50 hrs** |             |
 
 ---
 
 ## Sprint Breakdown
 
 ### Sprint 1 — Week 1: Backend Foundation (~18 hours)
+
 **Goal:** Working API, database connected, all endpoints built and tested.
-**Deploy:** Set up Render + Supabase early this week.
+**Deploy:** Set up Render + NeonDB early this week.
 
 - [ ] Story 0 — Connect database (0.5 hrs)
 - [ ] Story 1 — Registration backend (2 hrs)
@@ -522,6 +542,7 @@ Status: Not Started
 ---
 
 ### Sprint 2 — Week 2: Frontend + Integration (~18 hours)
+
 **Goal:** Full working app — auth, map, pins, search, onboarding.
 **Deploy:** Push frontend to Render, verify full stack works in production.
 
@@ -536,6 +557,7 @@ Status: Not Started
 ---
 
 ### Sprint 3 — Week 3: Custom Features + Polish (~14 hours)
+
 **Goal:** Personality engine, stats page, captured page, mobile responsiveness, deployment verified.
 
 - [ ] Story 12 — Stats & personality page (3-4 hrs)
@@ -549,9 +571,11 @@ Status: Not Started
 ---
 
 ### Week 4 — Buffer
+
 **Use if:** Mapbox took longer than expected, stories spilled over, or nice-to-haves worth adding.
 
 Nice-to-haves to tackle if time allows:
+
 - Dark mode toggle
 - Shareable social media card (AtlasMe Captured card)
 - Edit pin notes / visit date
@@ -563,16 +587,16 @@ Nice-to-haves to tackle if time allows:
 
 ## Deployment Plan
 
-| When | Action |
-|------|--------|
-| Week 1, Day 2-3 | Set up Supabase (PostgreSQL), connect to backend |
-| Week 1, Day 4-5 | Deploy Express backend to Render |
-| Week 2, Day 2-3 | Deploy React frontend to Render |
-| Week 2 onwards | Push to main regularly — keep production working |
-| Week 3 | Final deployment check, README screenshots, live URL |
+| When            | Action                                               |
+| --------------- | ---------------------------------------------------- |
+| Week 1, Day 2-3 | Set up NeonDB (PostgreSQL), connect to backend       |
+| Week 1, Day 4-5 | Deploy Express backend to Render                     |
+| Week 2, Day 2-3 | Deploy React frontend to Render                      |
+| Week 2 onwards  | Push to main regularly — keep production working     |
+| Week 3          | Final deployment check, README screenshots, live URL |
 
 > Deploy early. A broken production app at the end is worse than a working one that's missing a feature.
 
 ---
 
-*AtlasMe User Stories — last updated pre-sprint 1*
+_AtlasMe User Stories — last updated pre-sprint 1_

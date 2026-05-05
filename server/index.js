@@ -19,6 +19,16 @@ app.get("/test", (req, res) => {
   });
 });
 
+// Health check endpoint
+app.get("/health", (req, res) => {
+  res.json({
+    status: "UP",
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || "development",
+  });
+});
+
 // Start server
 const PORT = process.env.PORT || 3000;
 

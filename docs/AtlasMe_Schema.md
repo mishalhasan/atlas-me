@@ -81,7 +81,7 @@ module.exports = User
 
 ### Validation Rules
 - `email` — must be valid email format, not empty, unique
-- `username` — 3-20 characters, alphanumeric only, not empty, unique
+- `username` — 3-20 characters, not empty, unique
 - `password` — minimum 8 characters (store hash, never plaintext)
 
 ### Security Notes

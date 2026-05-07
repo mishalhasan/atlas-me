@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
-const rateLimit = require("express-rate-limit");
 const errorHandler = require("./middleware/errorHandler.js");
 const { testConnection } = require("./config/database");
 const db = require("./models/initModels");

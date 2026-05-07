@@ -76,4 +76,10 @@ const runTest = async () => {
   }
 };
 
-runTest();
+//runTest();
+
+const req = {};
+
+const value = req.countryCode?.trim().toUpperCase();
+
+console.log(value);

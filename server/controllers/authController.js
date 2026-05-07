@@ -1,8 +1,10 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const db = require("../models/initModels");
 const { Op } = require("sequelize");
-const User = require("../models/User");
 const JWT_SECRET = process.env.JWT_SECRET;
+const isProd = process.env.NODE_ENV === "production";
+const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000; //in ms
 
 /**
  * User registration via POST request.
@@ -10,7 +12,9 @@ const JWT_SECRET = process.env.JWT_SECRET;
  */
 exports.register = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    let email = req.body.email;
+    let username = req.body.username;
+    const password = req.body.password;
 
     //Validating input
     if (!username || !email || !password) {
@@ -18,6 +22,10 @@ exports.register = async (req, res) => {
         .status(400)
         .json({ error: "Missing one or more required fields" });
     }
+
+    //Sanitize
+    email = email.trim().toLowerCase();
+    username = username.trim().toLowerCase();
 
     // Basic email, password & username validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -39,8 +47,14 @@ exports.register = async (req, res) => {
       });
     }
 
+    if (username.includes(" ")) {
+      return res.status(400).json({
+        error: "Username cannot contain spaces.",
+      });
+    }
+
     //Check for existing user
-    const existingUser = await User.findOne({
+    const existingUser = await db.User.findOne({
       where: {
         [Op.or]: [{ username }, { email }],
       },
@@ -58,21 +72,30 @@ exports.register = async (req, res) => {
       email,
       password,
     };
-    const user = await User.create(userData);
-
+    const user = await db.User.create(userData);
     //Generate JWT
-    const token = jwt.sign({ userId: user.userId }, JWT_SECRET, {
+    const token = jwt.sign({ id: user.id }, JWT_SECRET, {
       expiresIn: "7d",
+    });
+
+    //Send cookie, set secure based on env: dev + prod have different setups.
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
+      maxAge: SEVEN_DAYS,
     });
 
     //Return user
     return res.status(200).json({
       message: "Registration successful",
-      token,
+      user: {
+        username: user.username,
+      },
     });
   } catch (error) {
     console.error("Registration error:", error);
-    res.status(500).json({ error: "Something went wrong during registration" });
+    res.status(500).json({ error: "Server error during registration" });
   }
 };
 
@@ -82,15 +105,19 @@ exports.register = async (req, res) => {
  */
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    let email = req.body.email;
+    const password = req.body.password;
 
     //Validating input
     if (!email || !password) {
       return res.status(400).json({ error: "Email and password are required" });
     }
 
+    //Sanitize
+    email = email.trim().toLowerCase();
+
     //Locating user
-    const user = await User.findOne({
+    const user = await db.User.findOne({
       where: {
         email,
       },
@@ -112,20 +139,45 @@ exports.login = async (req, res) => {
     }
 
     //Generate JWT token
-    const token = jwt.sign({ userId: user.userId }, JWT_SECRET, {
+    const token = jwt.sign({ id: user.id }, JWT_SECRET, {
       expiresIn: "7d",
+    });
+
+    //Send cookie, dev + prod have different setups.
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
+      maxAge: SEVEN_DAYS,
     });
 
     // Send token to client
     res.status(200).json({
       message: "Login successful",
-      token: token,
       user: {
         username: user.username,
       },
     });
   } catch (error) {
     console.error("Login error:", error);
-    res.status(500).json({ error: "Something went wrong during login" });
+    res.status(500).json({ error: "Server error during login" });
+  }
+};
+
+/**
+ * User logout via POST request.
+ * Endpoint: api/auth/logout
+ */
+exports.logout = async (req, res) => {
+  try {
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: isProd ? "none" : "lax",
+    });
+    res.json({ message: "Logged out" });
+  } catch (error) {
+    console.error("Logout error:", error);
+    res.status(500).json({ error: "Server error during logout" });
   }
 };

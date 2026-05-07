@@ -2,15 +2,21 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
+const cookieParser = require("cookie-parser");
 const rateLimit = require("express-rate-limit");
 const errorHandler = require("./middleware/errorHandler.js");
-const { sequelize, testConnection } = require("./config/database");
+const { testConnection } = require("./config/database");
+const db = require("./models/initModels");
 
 const app = express();
+
+// Render Production Setup
+app.set("trust proxy", 1);
 
 // Basic Middleware
 app.use(express.json());
 app.use(helmet());
+app.use(cookieParser());
 
 const FRONTEND_URL = "https://atlas-me-client.onrender.com";
 const allowedOrigins = ["http://localhost:5173", FRONTEND_URL];
@@ -24,20 +30,20 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    // methods: ["GET", "POST", "PUT", "DELETE"],
+    // allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   }),
 );
 
 const authRoutes = require("./routes/authRoutes.js");
-//const pinsRoutes = require("./routes/pinRoutes.js");
-//const usersRoutes = require("./routes/userRoutes.js");
+const pinsRoutes = require("./routes/pinsRoutes.js");
+const usersRoutes = require("./routes/usersRoutes.js");
 
 // Mount routes under /api
 app.use("/api/auth", authRoutes);
-// app.use("/api/pins", pinsRoutes);
-// app.use("/api/users", pinsRoutes);
+app.use("/api/pins", pinsRoutes);
+app.use("/api/users", usersRoutes);
 
 //Root router
 app.get("/", (req, res) => {
@@ -75,9 +81,12 @@ const PORT = process.env.PORT || 3000;
 
 //Connect DB & start server
 const startServer = async () => {
-  await testConnection();
+  console.log("\n🔄 Connecting to DB...");
 
-  await sequelize.sync({ alter: true });
+  await testConnection();
+  console.log("\n🔄 Syncing DB...");
+
+  await db.sequelize.sync({ alter: true });
   console.log("✅ Tables synced");
 
   //Server Status

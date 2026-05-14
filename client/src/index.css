@@ -10,6 +10,10 @@
 @tailwind utilities; */
 
 @theme inline {
+  --color-atlas-amber: var(--atlas-amber);
+  --color-atlas-indigo: var(--atlas-indigo);
+  --color-atlas-map-bg: var(--atlas-map-bg);
+    --font-playfair: "Playfair Display", serif;
   --font-heading: var(--font-sans);
   --font-sans: "Inter Variable", sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
@@ -134,9 +138,8 @@
 }
 
 :root {
-  --color-accent: #d4a843;
-  --color-primary: #4f46e5;
-  --color-map-bg: #1a1a14;
+  --atlas-amber: #d4a843;
+  --atlas-indigo: #4f46e5;
+  --atlas-map-bg: #1a1a14;
   --font-playfair: "Playfair Display", serif;
-  --font-inter: "Inter", sans-serif;
 }

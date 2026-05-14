@@ -1,16 +1,22 @@
 import "./App.css";
+import { Routes, Route } from "react-router-dom";
 
-import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import Home from "./pages/Home";
+import Onboarding from "./pages/Onboarding";
+import Map from "./pages/Map";
+import Stats from "./pages/Stats";
+import Captured from "./pages/Captured";
+import NotFound from "./pages/NotFound";
 
 export default function App() {
   return (
-    <div style={{ padding: "2rem" }}>
-      <p style={{ fontFamily: "var(--font-playfair)", fontSize: "2rem" }}>
-        AtlasMe
-      </p>
-      <Button>Click me</Button>
-      <Search size={24} />
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/onboarding" element={<Onboarding />} />
+      <Route path="/map" element={<Map />} />
+      <Route path="/stats" element={<Stats />} />
+      <Route path="/captured/:username" element={<Captured />} />
+      <Route path="*" element={<NotFound />} />
+    </Routes>
   );
 }

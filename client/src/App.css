@@ -1,0 +1,17 @@
+/* Mapbox Popup CSS */
+
+.mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
+  /* border-bottom-color: rgba(255, 255, 255, 1) !important; */
+}
+
+.mapboxgl-popup .mapboxgl-popup-content {
+  /* background-color: rgba(255, 255, 255, 1); */
+  /* max-width: 300px !important; */
+  min-width: 220px;
+  /* padding-top: 1.5rem; */
+}
+
+mapboxgl-popup mapboxgl-popup-anchor-top {
+  /* max-width: 300px !important; */
+  /* min-width: 180px; */
+}

@@ -91,6 +91,7 @@ exports.register = async (req, res) => {
       message: "Registration successful",
       user: {
         username: user.username,
+        userId: user.id,
       },
     });
   } catch (error) {
@@ -156,6 +157,7 @@ exports.login = async (req, res) => {
       message: "Login successful",
       user: {
         username: user.username,
+        userId: user.id,
       },
     });
   } catch (error) {

@@ -35,7 +35,7 @@ export function useSearch(initialQuery = null) {
         const country = location.properties.context.country?.name || "";
 
         return {
-          id: location.id,
+          mapboxId: location.id,
           name: location.properties.name,
           countryCode: location.properties.context.country?.country_code,
           country,
@@ -108,7 +108,7 @@ export function useSearch(initialQuery = null) {
 
   const handleSearchDropdown = (locationId) => {
     const selectedLoc = searchLocations.find(
-      (searchLocation) => searchLocation.id === locationId,
+      (searchLocation) => searchLocation.mapboxId === locationId,
     );
     setSelectedLocation(selectedLoc);
     handleClearSearch();

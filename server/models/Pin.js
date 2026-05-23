@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
 
+      mapboxId: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       name: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -42,9 +46,16 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
 
-      type: {
-        type: DataTypes.ENUM("wishlist", "visited"),
+      types: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
         allowNull: false,
+        validate: {
+          notEmptyArray(value) {
+            if (value.length < 1) {
+              throw new Error("type must not be empty");
+            }
+          },
+        },
       },
 
       countryCode: {

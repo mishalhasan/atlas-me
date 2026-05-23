@@ -1,13 +1,17 @@
 import { useRef, useState, useEffect } from "react";
 //import "mapbox-gl/dist/mapbox-gl.css";
-import axios from "axios";
-import api from "@/api/api";
+import { usePins } from "./usePins";
 
 export function usePopup(searchResult) {
   const mapRef = useRef();
+  const { addPin, deletePin, loading, error, mapBoxDuplicateCheck } = usePins();
+
   const [showPopup, setShowPopup] = useState(false);
-  const [zoomComplete, setZoomComplete] = useState(false);
+  const [pinExists, setPinExists] = useState(false);
+  //const [zoomComplete, setZoomComplete] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1.45);
+
+
   const zoomPossibleLevel = {
     country: 3,
     region: 4,
@@ -16,12 +20,25 @@ export function usePopup(searchResult) {
 
   /** HANDLE FUNCTIONS */
 
-  const handleVisited = () => {
-    console.log("Visited");
+  /**
+   * Adds a pin with a specific type
+   */
+  const handleAddPin = async (type) => {
+    await addPin({
+      ...searchResult,
+      type,
+    });
+
+    //Close pop-up
+    setShowPopup(false);
+
+    //Trigger addPin UI
+    return true;
   };
-  const handleWishlist = () => {
-    console.log("Wishlist");
-  };
+
+  /**
+   * Closes the popup without performing any action
+   */
   const handleCancel = () => {
     console.log("Cancel");
     setShowPopup(false);
@@ -32,10 +49,13 @@ export function usePopup(searchResult) {
     if (searchResult) {
       const { longitude, latitude } = searchResult;
 
+      //Reset Popup States
       setShowPopup(false);
+      setPinExists(false);
 
       console.log(zoomLevel[searchResult.type]);
       console.log("HELP");
+      console.log("searchResult in useEffect", searchResult);
       mapRef.current.flyTo({
         center: [longitude, latitude], // [longitude, latitude]
         zoom: zoomPossibleLevel[searchResult.type],
@@ -50,6 +70,11 @@ export function usePopup(searchResult) {
       if (Object.values(zoomPossibleLevel).includes(zoomLevel)) {
         console.log("exists!", zoomLevel);
         setShowPopup(true);
+
+        if (mapBoxDuplicateCheck(searchResult.mapboxId)) {
+          console.log(true);
+          setPinExists(true);
+        }
       }
     }, 300);
 
@@ -60,8 +85,8 @@ export function usePopup(searchResult) {
     showPopup,
     setZoomLevel,
     mapRef,
-    handleVisited,
-    handleWishlist,
+    handleAddPin,
     handleCancel,
+    pinExists,
   };
 }

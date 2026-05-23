@@ -15,26 +15,6 @@ import NotFound from "./pages/NotFound";
 
 export default function App() {
   return (
-    // <>
-    //   <Routes>
-    //     <Route element={<AuthProvider />}>
-    //       <Route path="/" element={<Home />} />
-    //       <Route
-    //         element={
-    //           <PinsProvider>
-    //             <ProtectedLayout />
-    //           </PinsProvider>
-    //         }
-    //       >
-    //         <Route path="/onboarding" element={<Onboarding />} />
-    //         <Route path="/map" element={<Map />} />
-    //         <Route path="/stats" element={<Stats />} />
-    //       </Route>
-    //     </Route>
-    //     <Route path="/captured/:username" element={<Captured />} />
-    //     <Route path="*" element={<NotFound />} />
-    //   </Routes>
-    // </>
     <>
       <Routes>
         <Route element={<AuthProvider />}>

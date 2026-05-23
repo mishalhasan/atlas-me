@@ -52,7 +52,7 @@ function Home() {
                 setTab(val);
                 setErrors({});
               }}
-              className="min-h-[460px] w-[290px] flex flex-col"
+              className="min-h-115 w-72.5 flex flex-col"
             >
               <TabsList className="grid w-full grid-cols-2 mb-4 ">
                 <TabsTrigger

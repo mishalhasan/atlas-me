@@ -12,13 +12,15 @@ exports.loadPins = async (req, res) => {
         userId: req.user.id,
       },
       attributes: [
+        "id",
         "name",
         "latitude",
         "longitude",
-        "type",
+        "types",
         "countryCode",
         "continent",
         "region",
+        "mapboxId",
       ],
     });
 
@@ -41,6 +43,7 @@ exports.createPin = async (req, res) => {
     const type = req.body.type?.trim();
     const countryCode = req.body.countryCode?.trim().toUpperCase();
     const continent = req.body.continent?.trim();
+    const mapboxId = req.body.mapboxId?.trim();
 
     // fallback to continent if region is not provided
     const region = req.body.region?.trim() || continent;
@@ -49,6 +52,7 @@ exports.createPin = async (req, res) => {
     const longitude = req.body.longitude;
 
     if (
+      !mapboxId ||
       !name ||
       !type ||
       !countryCode ||
@@ -68,7 +72,7 @@ exports.createPin = async (req, res) => {
       typeof countryCode !== "string"
     ) {
       return res.status(400).json({
-        error: "Invalid field types.",
+        error: "Invalid field typeof of one or more.",
       });
     }
 
@@ -117,10 +121,11 @@ exports.createPin = async (req, res) => {
     //Add pin to DB
     const rawPin = {
       userId: req.user.id,
+      mapboxId,
       name,
       latitude,
       longitude,
-      type,
+      types: [type],
       countryCode,
       continent,
       region,
@@ -131,10 +136,12 @@ exports.createPin = async (req, res) => {
     return res.json({
       message: "Pin addded successfully.",
       pin: {
+        id: pin.id,
+        mapboxId: pin.mapboxId,
         name: pin.name,
         latitude: pin.latitude,
         longitude: pin.longitude,
-        type: pin.type,
+        types: pin.types,
         countryCode: pin.countryCode,
         continent: pin.continent,
         region: pin.region,
@@ -147,10 +154,10 @@ exports.createPin = async (req, res) => {
 };
 
 /**
- * Update pin's type by id for a specific user via PATCH request.
- * Endpoint: api/pins/:id
+ * Add a new type to an existing pin for a specific user via PATCH request.
+ * Endpoint: api/pins/:id/types
  */
-exports.updatePinType = async (req, res) => {
+exports.addPinType = async (req, res) => {
   try {
     //Validate request
     const id = Number(req.params.id);
@@ -158,15 +165,15 @@ exports.updatePinType = async (req, res) => {
       return res.status(400).json({ error: "Invalid ID" });
     }
 
-    const type = req.body?.type;
-    if (!type) {
+    const newType = req.body?.type.trim().toLowerCase();
+    if (!newType) {
       return res.status(400).json({ error: "Missing 'type' field." });
     }
 
     const validTypes = ["visited", "wishlist"];
-    if (!validTypes.includes(type)) {
+    if (!validTypes.includes(newType)) {
       return res.status(400).json({
-        error: `Invalid type. Sent type is '${type}'`,
+        error: `Invalid type. Sent type is '${newType}'`,
       });
     }
 
@@ -176,26 +183,102 @@ exports.updatePinType = async (req, res) => {
       return res.status(404).json({ error: "Pin not found" });
     }
 
+    //Check for duplicates
+    if (pin.types.includes(newType)) {
+      return res
+        .status(409)
+        .json({ error: "Duplicate entry. Type already exists." });
+    }
+
+    //Update array and pin
     const updatedPin = await pin.update({
-      type,
+      types: [...pin.types, newType],
     });
 
     //Return response back to client
     return res.json({
       message: "Pin updated successfully",
       pin: {
+        id: updatedPin.id,
+        mapboxId: updatedPin.mapboxId,
         name: updatedPin.name,
         latitude: updatedPin.latitude,
         longitude: updatedPin.longitude,
-        type: updatedPin.type,
+        types: updatedPin.types,
         countryCode: updatedPin.countryCode,
         continent: updatedPin.continent,
         region: updatedPin.region,
       },
     });
   } catch (error) {
-    console.error("Update by ID request failed:", error);
-    res.status(500).json({ error: "Server error. Failed to update pin." });
+    console.error("Add type by ID request failed:", error);
+    res.status(500).json({ error: "Server error. Failed to add pin type." });
+  }
+};
+
+/**
+ * Remove a type from a pin by id for a specific user via DELETE request.
+ * Endpoint: api/pins/:id/types
+ */
+exports.deletePinType = async (req, res) => {
+  try {
+    //Validate request
+    const id = Number(req.params.id);
+    if (!Number.isInteger(id)) {
+      return res.status(400).json({ error: "Invalid ID" });
+    }
+
+    const pin = await db.Pin.findByPk(id);
+
+    if (!pin) {
+      return res.status(404).json({ error: "Pin not found" });
+    }
+
+    // Prevent removing the last remaining type
+    if (pin.types.length === 1) {
+      return res.status(400).json({
+        error: "A pin must have at least one type.",
+      });
+    }
+
+    const removeType = req.body?.type.trim().toLowerCase();
+    if (!removeType) {
+      return res.status(400).json({ error: "Missing 'type' field." });
+    }
+
+    const validTypes = ["visited", "wishlist"];
+    if (!validTypes.includes(removeType)) {
+      return res.status(400).json({
+        error: `Invalid type. Sent type is '${removeType}'`,
+      });
+    }
+
+    //Remove from array
+    const updatedTypes = pin.types.filter((type) => type !== removeType);
+
+    //Update pin
+    const updatedPin = await pin.update({
+      types: updatedTypes,
+    });
+
+    //Return response back to client
+    return res.json({
+      message: "Pin type removed successfully",
+      pin: {
+        id: updatedPin.id,
+        mapboxId: updatedPin.mapboxId,
+        name: updatedPin.name,
+        latitude: updatedPin.latitude,
+        longitude: updatedPin.longitude,
+        types: updatedPin.types,
+        countryCode: updatedPin.countryCode,
+        continent: updatedPin.continent,
+        region: updatedPin.region,
+      },
+    });
+  } catch (error) {
+    console.error("Delete type by ID request failed:", error);
+    res.status(500).json({ error: "Server error. Failed to delete pin type." });
   }
 };
 
@@ -211,17 +294,6 @@ exports.deletePin = async (req, res) => {
       return res
         .status(400)
         .json({ error: "Invalid ID. Expected an integer value." });
-    }
-
-    const type = req.body?.type;
-    if (!type) {
-      return res.status(400).json({ error: "Missing 'type' field." });
-    }
-    const validTypes = ["visited", "wishlist"];
-    if (!validTypes.includes(type)) {
-      return res.status(400).json({
-        error: `Invalid type. Sent type is '${type}'`,
-      });
     }
 
     const deleted = await db.Pin.destroy({

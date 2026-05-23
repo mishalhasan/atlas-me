@@ -53,8 +53,8 @@ function SearchBar({ search }) {
               {searchLocations.map((searchLocation) => (
                 <li
                   className="px-3 py-2 border-b last:border-b-0 hover:bg-gray-100 cursor-pointer"
-                  key={searchLocation.id}
-                  onClick={() => handleSearchDropdown(searchLocation.id)}
+                  key={searchLocation.mapboxId}
+                  onClick={() => handleSearchDropdown(searchLocation.mapboxId)}
                 >
                   {searchLocation.display}
                 </li>

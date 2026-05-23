@@ -4,7 +4,9 @@ import { Outlet } from "react-router-dom";
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() =>
+    JSON.parse(localStorage.getItem("user")),
+  );
 
   const login = (user) => {
     //Save to Local Storage & Update State

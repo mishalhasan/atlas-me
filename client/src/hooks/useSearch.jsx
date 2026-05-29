@@ -10,6 +10,7 @@ export function useSearch(initialQuery = null) {
   const [text, setText] = useState("");
   const [searchLocations, setSearchLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [popupKey, setPopupKey] = useState(0);
 
   // useDebugValue(`selectedLocation: ${selectedLocation}`);
   // useDebugValue(`Error: ${errorMsg}`);
@@ -101,7 +102,10 @@ export function useSearch(initialQuery = null) {
       resetSearchState(); //clears
       return;
     } else {
-      setSelectedLocation(geoCodeLocations[0]);
+      const newPopupKey = popupKey + 1;
+      setPopupKey(newPopupKey);
+      setSelectedLocation({ ...geoCodeLocations[0], popupKey: newPopupKey });
+      // setSelectedLocation(geoCodeLocations[0]);
       handleClearSearch();
     }
   };
@@ -110,7 +114,9 @@ export function useSearch(initialQuery = null) {
     const selectedLoc = searchLocations.find(
       (searchLocation) => searchLocation.mapboxId === locationId,
     );
-    setSelectedLocation(selectedLoc);
+    const newPopupKey = popupKey + 1;
+    setPopupKey(newPopupKey);
+    setSelectedLocation({ ...selectedLoc, popupKey: newPopupKey });
     handleClearSearch();
   };
 

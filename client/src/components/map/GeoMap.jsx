@@ -1,11 +1,24 @@
-import Map, { Popup } from "react-map-gl";
+import Map, { Popup, NavigationControl } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { usePopup } from "@/hooks/usePopup";
-import PopupContent from "./PopupContent";
+import AddPin from "./popup/AddPin";
+import MarkerPin from "./pins/MarkerPin";
+import { usePins } from "@/hooks/usePins";
+import ManagePin from "./popup/ManagePin";
 
 function GeoMap({ searchResult }) {
-  const { showPopup, setZoomLevel, mapRef, handleCancel, handleAddPin } =
-    usePopup(searchResult);
+  const {
+    showPopup,
+    setZoomLevel,
+    mapRef,
+    handleCancel,
+    handleAddPin,
+    //pinExists,
+    handleDelete,
+    handleUpdate,
+  } = usePopup(searchResult);
+  const { pins, loading, error, mapBoxDuplicateCheck } = usePins();
+  //const matchedPin = mapBoxDuplicateCheck(searchResult?.mapboxId);
 
   //const { addPin, deletePin, loading, error, mapBoxDuplicateCheck } = usePins();
   // const { handleCancel, handleAddPin, showPopup, setZoomLevel, mapRef } =
@@ -42,6 +55,8 @@ function GeoMap({ searchResult }) {
         },
       }}
     >
+      <NavigationControl />
+
       {showPopup && (
         <Popup
           longitude={searchResult.longitude}
@@ -49,14 +64,34 @@ function GeoMap({ searchResult }) {
           closeButton={false}
           anchor="top"
           offset={10}
+          key={searchResult?.popupKey}
         >
-          <PopupContent
-            handleCancel={handleCancel}
-            handleAddPin={handleAddPin}
-            place={searchResult.name}
-          />
+          {mapBoxDuplicateCheck(searchResult?.mapboxId) ? (
+            <ManagePin
+              handleCancel={handleCancel}
+              place={searchResult.name}
+              matchedPin={mapBoxDuplicateCheck(searchResult?.mapboxId)}
+              loading={loading}
+              error={error}
+              handleUpdate={handleUpdate}
+              handleDelete={handleDelete}
+              key={searchResult.mapboxId}
+            />
+          ) : (
+            <AddPin
+              handleCancel={handleCancel}
+              handleAddPin={handleAddPin}
+              searchResult={searchResult}
+              place={searchResult.name}
+              loading={loading}
+              error={error}
+            />
+          )}
         </Popup>
       )}
+
+      {pins.length > 0 &&
+        pins.map((pin) => <MarkerPin key={pin.id} pin={pin} />)}
     </Map>
   );
 }

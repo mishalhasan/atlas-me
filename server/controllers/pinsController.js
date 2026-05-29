@@ -154,10 +154,10 @@ exports.createPin = async (req, res) => {
 };
 
 /**
- * Add a new type to an existing pin for a specific user via PATCH request.
+ * Update types for an existing pin for a specific user via PATCH request.
  * Endpoint: api/pins/:id/types
  */
-exports.addPinType = async (req, res) => {
+exports.updatePinType = async (req, res) => {
   try {
     //Validate request
     const id = Number(req.params.id);
@@ -165,15 +165,16 @@ exports.addPinType = async (req, res) => {
       return res.status(400).json({ error: "Invalid ID" });
     }
 
-    const newType = req.body?.type.trim().toLowerCase();
-    if (!newType) {
-      return res.status(400).json({ error: "Missing 'type' field." });
+    if (!Array.isArray(req.body?.types) || req.body.types.length === 0) {
+      return res.status(400).json({ error: "Missing 'types' field." });
     }
 
+    const newTypes = req.body.types.map((type) => type.trim().toLowerCase());
+
     const validTypes = ["visited", "wishlist"];
-    if (!validTypes.includes(newType)) {
+    if (!newTypes.every((type) => validTypes.includes(type))) {
       return res.status(400).json({
-        error: `Invalid type. Sent type is '${newType}'`,
+        error: `Invalid types. Sent types are '${newTypes}'`,
       });
     }
 
@@ -183,16 +184,12 @@ exports.addPinType = async (req, res) => {
       return res.status(404).json({ error: "Pin not found" });
     }
 
-    //Check for duplicates
-    if (pin.types.includes(newType)) {
-      return res
-        .status(409)
-        .json({ error: "Duplicate entry. Type already exists." });
-    }
+    //Ensure no duplicates
+    const uniqueTypes = [...new Set(newTypes)];
 
     //Update array and pin
     const updatedPin = await pin.update({
-      types: [...pin.types, newType],
+      types: uniqueTypes,
     });
 
     //Return response back to client
@@ -216,71 +213,134 @@ exports.addPinType = async (req, res) => {
   }
 };
 
-/**
- * Remove a type from a pin by id for a specific user via DELETE request.
- * Endpoint: api/pins/:id/types
- */
-exports.deletePinType = async (req, res) => {
-  try {
-    //Validate request
-    const id = Number(req.params.id);
-    if (!Number.isInteger(id)) {
-      return res.status(400).json({ error: "Invalid ID" });
-    }
+// /**
+//  * Add a new type to an existing pin for a specific user via PATCH request.
+//  * Endpoint: api/pins/:id/types
+//  */
+// exports.addPinType = async (req, res) => {
+//   try {
+//     //Validate request
+//     const id = Number(req.params.id);
+//     if (!Number.isInteger(id)) {
+//       return res.status(400).json({ error: "Invalid ID" });
+//     }
 
-    const pin = await db.Pin.findByPk(id);
+//     const newType = req.body?.type.trim().toLowerCase();
+//     if (!newType) {
+//       return res.status(400).json({ error: "Missing 'type' field." });
+//     }
 
-    if (!pin) {
-      return res.status(404).json({ error: "Pin not found" });
-    }
+//     const validTypes = ["visited", "wishlist"];
+//     if (!validTypes.includes(newType)) {
+//       return res.status(400).json({
+//         error: `Invalid type. Sent type is '${newType}'`,
+//       });
+//     }
 
-    // Prevent removing the last remaining type
-    if (pin.types.length === 1) {
-      return res.status(400).json({
-        error: "A pin must have at least one type.",
-      });
-    }
+//     const pin = await db.Pin.findByPk(id);
 
-    const removeType = req.body?.type.trim().toLowerCase();
-    if (!removeType) {
-      return res.status(400).json({ error: "Missing 'type' field." });
-    }
+//     if (!pin) {
+//       return res.status(404).json({ error: "Pin not found" });
+//     }
 
-    const validTypes = ["visited", "wishlist"];
-    if (!validTypes.includes(removeType)) {
-      return res.status(400).json({
-        error: `Invalid type. Sent type is '${removeType}'`,
-      });
-    }
+//     //Check for duplicates
+//     if (pin.types.includes(newType)) {
+//       return res
+//         .status(409)
+//         .json({ error: "Duplicate entry. Type already exists." });
+//     }
 
-    //Remove from array
-    const updatedTypes = pin.types.filter((type) => type !== removeType);
+//     //Update array and pin
+//     const updatedPin = await pin.update({
+//       types: [...pin.types, newType],
+//     });
 
-    //Update pin
-    const updatedPin = await pin.update({
-      types: updatedTypes,
-    });
+//     //Return response back to client
+//     return res.json({
+//       message: "Pin updated successfully",
+//       pin: {
+//         id: updatedPin.id,
+//         mapboxId: updatedPin.mapboxId,
+//         name: updatedPin.name,
+//         latitude: updatedPin.latitude,
+//         longitude: updatedPin.longitude,
+//         types: updatedPin.types,
+//         countryCode: updatedPin.countryCode,
+//         continent: updatedPin.continent,
+//         region: updatedPin.region,
+//       },
+//     });
+//   } catch (error) {
+//     console.error("Add type by ID request failed:", error);
+//     res.status(500).json({ error: "Server error. Failed to add pin type." });
+//   }
+// };
 
-    //Return response back to client
-    return res.json({
-      message: "Pin type removed successfully",
-      pin: {
-        id: updatedPin.id,
-        mapboxId: updatedPin.mapboxId,
-        name: updatedPin.name,
-        latitude: updatedPin.latitude,
-        longitude: updatedPin.longitude,
-        types: updatedPin.types,
-        countryCode: updatedPin.countryCode,
-        continent: updatedPin.continent,
-        region: updatedPin.region,
-      },
-    });
-  } catch (error) {
-    console.error("Delete type by ID request failed:", error);
-    res.status(500).json({ error: "Server error. Failed to delete pin type." });
-  }
-};
+// /**
+//  * Remove a type from a pin by id for a specific user via DELETE request.
+//  * Endpoint: api/pins/:id/types
+//  */
+// exports.deletePinType = async (req, res) => {
+//   try {
+//     //Validate request
+//     const id = Number(req.params.id);
+//     if (!Number.isInteger(id)) {
+//       return res.status(400).json({ error: "Invalid ID" });
+//     }
+
+//     const pin = await db.Pin.findByPk(id);
+
+//     if (!pin) {
+//       return res.status(404).json({ error: "Pin not found" });
+//     }
+
+//     // Prevent removing the last remaining type
+//     if (pin.types.length === 1) {
+//       return res.status(400).json({
+//         error: "A pin must have at least one type.",
+//       });
+//     }
+
+//     const removeType = req.body?.type.trim().toLowerCase();
+//     if (!removeType) {
+//       return res.status(400).json({ error: "Missing 'type' field." });
+//     }
+
+//     const validTypes = ["visited", "wishlist"];
+//     if (!validTypes.includes(removeType)) {
+//       return res.status(400).json({
+//         error: `Invalid type. Sent type is '${removeType}'`,
+//       });
+//     }
+
+//     //Remove from array
+//     const updatedTypes = pin.types.filter((type) => type !== removeType);
+
+//     //Update pin
+//     const updatedPin = await pin.update({
+//       types: updatedTypes,
+//     });
+
+//     //Return response back to client
+//     return res.json({
+//       message: "Pin type removed successfully",
+//       pin: {
+//         id: updatedPin.id,
+//         mapboxId: updatedPin.mapboxId,
+//         name: updatedPin.name,
+//         latitude: updatedPin.latitude,
+//         longitude: updatedPin.longitude,
+//         types: updatedPin.types,
+//         countryCode: updatedPin.countryCode,
+//         continent: updatedPin.continent,
+//         region: updatedPin.region,
+//       },
+//     });
+//   } catch (error) {
+//     console.error("Delete type by ID request failed:", error);
+//     res.status(500).json({ error: "Server error. Failed to delete pin type." });
+//   }
+// };
 
 /**
  * Delete pin by id for a specific user via DELETE request.

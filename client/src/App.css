@@ -11,7 +11,14 @@
   /* padding-top: 1.5rem; */
 }
 
+
 mapboxgl-popup mapboxgl-popup-anchor-top {
   /* max-width: 300px !important; */
   /* min-width: 180px; */
+}
+
+
+/* Navigation Control Location*/
+div.mapboxgl-ctrl-top-right .mapboxgl-ctrl{
+  margin: 20px 20px 0 0; 
 }

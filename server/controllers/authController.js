@@ -106,6 +106,7 @@ exports.register = async (req, res) => {
  */
 exports.login = async (req, res) => {
   try {
+
     let email = req.body.email;
     const password = req.body.password;
 

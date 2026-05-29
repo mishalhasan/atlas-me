@@ -13,7 +13,8 @@
   --color-atlas-amber: var(--atlas-amber);
   --color-atlas-indigo: var(--atlas-indigo);
   --color-atlas-map-bg: var(--atlas-map-bg);
-    --font-playfair: "Playfair Display", serif;
+  --color-atlas-purple: var(--atlas-purple);
+  --font-playfair: "Playfair Display", serif;
   --font-heading: var(--font-sans);
   --font-sans: "Inter Variable", sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
@@ -141,5 +142,19 @@
   --atlas-amber: #d4a843;
   --atlas-indigo: #4f46e5;
   --atlas-map-bg: #1a1a14;
+  --atlas-purple: #4b0082;
   --font-playfair: "Playfair Display", serif;
+}
+
+@keyframes pulse-line {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+.animate-pulse-line {
+  animation: pulse-line 2.4s ease-in-out infinite;
 }

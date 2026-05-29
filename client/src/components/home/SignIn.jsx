@@ -75,14 +75,15 @@ export default function SignIn({ setTab, errors, setErrors }) {
               disabled={loading}
               className="rounded-sm bg-atlas-indigo self-center w-full my-5 hover:bg-[#3730a3] cursor-pointer"
             >
-              {loading ? (
+              {/* {loading ? (
                 <span className="flex items-center gap-2">
                   Continue
                   <Spinner />
                 </span>
               ) : (
                 "Continue"
-              )}
+              )} */}
+              Continue
             </Button>
           </form>
           <p className="text-center text-[#6b7280]">

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -14,10 +14,16 @@ import {
 } from "../components/ui/tabs.jsx";
 import SignIn from "@/components/home/SignIn";
 import SignUp from "@/components/home/SignUp";
+import api from "@/api/api.js";
 
 function Home() {
   const [tab, setTab] = useState("sign-in");
   const [errors, setErrors] = useState({});
+
+  /** Wake-up DB**/
+  useEffect(() => {
+    api.get("/health");
+  }, []);
 
   return (
     <>

@@ -12,6 +12,7 @@ import Map from "./pages/Map";
 import Stats from "./pages/Stats";
 import Captured from "./pages/Captured";
 import NotFound from "./pages/NotFound";
+import { Toaster } from "./components/ui/sonner";
 
 export default function App() {
   return (
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/captured/:username" element={<Captured />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <Toaster />
     </>
   );
 }

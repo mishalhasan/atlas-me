@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import api from "@/api/api";
 import { getContinent, validateId } from "@/utils/helper";
+import useAuth from "@/hooks/useAuth";
 
 export const PinsContext = createContext();
 
@@ -8,6 +9,9 @@ export function PinsProvider({ children }) {
   const [pins, setPins] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const { user } = useAuth();
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [initialError, setInitialError] = useState(false);
 
   /*** CRUD FUNCTIONS ***/
 
@@ -53,18 +57,19 @@ export function PinsProvider({ children }) {
   const deletePin = async (pinId) => {
     //Validate function call
     const id = validateId(pinId);
-    if (!checkPinExists(id)) return;
+    if (!checkPinExists(pinId)) return;
 
     try {
       setLoading(true);
       setError(false);
 
       //API call
-      const res = await api.delete(`/api/pins/${id}`);
+      const res = await api.delete(`/api/pins/${pinId}`);
 
-      const newPins = pins.filter((pin) => pin.id !== id);
+      const newPins = pins.filter((pin) => pin.id !== pinId);
       setPins(newPins);
       console.log("Delete pin success");
+      return res.data.message;
     } catch (error) {
       console.error(
         error.response?.data?.error || error.message || "Unknown error",
@@ -77,8 +82,8 @@ export function PinsProvider({ children }) {
 
   const loadPins = async () => {
     try {
-      setLoading(true);
-      setError(false);
+      setInitialLoading(true);
+      setInitialError(false);
 
       //API call
       const res = await api.get("api/pins/");
@@ -90,13 +95,13 @@ export function PinsProvider({ children }) {
       console.error(
         error.response?.data?.error || error.message || "Unknown error",
       );
-      setError(true);
+      setInitialError(true);
     } finally {
-      setLoading(false);
+      setInitialLoading(false);
     }
   };
 
-  const addPinType = async (pinId, type) => {
+  const updatePinType = async (pinId, types) => {
     //Validate function call
     const id = validateId(pinId);
     if (!checkPinExists(id)) return;
@@ -106,10 +111,15 @@ export function PinsProvider({ children }) {
       setError(false);
 
       //API call
-      const res = await api.patch(`/api/pins/${id}/types`, { type });
+      const res = await api.patch(`/api/pins/${pinId}/types`, { types });
 
-      setPins((prev) => [...prev, res.data.pin]);
+      const resPinId = res.data.pin.id;
+      setPins((prev) => {
+        const filteredPins = prev.filter((pin) => pin.id !== resPinId);
+        return [...filteredPins, res.data.pin];
+      });
       console.log("Update pin type add success");
+      return res.data.pin;
     } catch (error) {
       console.error(
         error.response?.data?.error || error.message || "Unknown error",
@@ -120,29 +130,53 @@ export function PinsProvider({ children }) {
     }
   };
 
-  const deletePinType = async (pinId, type) => {
-    //Validate function call
-    const id = validateId(pinId);
-    if (!checkPinExists(id)) return;
+  // const addPinType = async (pinId, type) => {
+  //   //Validate function call
+  //   const id = validateId(pinId);
+  //   if (!checkPinExists(id)) return;
 
-    try {
-      setLoading(true);
-      setError(false);
+  //   try {
+  //     setLoading(true);
+  //     setError(false);
 
-      //API call
-      const res = await api.delete(`/api/pins/${id}/types`, { type });
+  //     //API call
+  //     const res = await api.patch(`/api/pins/${id}/types`, { type });
 
-      setPins((prev) => [...prev, res.data.pin]);
-      console.log("Update pin type removal success");
-    } catch (error) {
-      console.error(
-        error.response?.data?.error || error.message || "Unknown error",
-      );
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     setPins((prev) => [...prev, res.data.pin]);
+  //     console.log("Update pin type add success");
+  //   } catch (error) {
+  //     console.error(
+  //       error.response?.data?.error || error.message || "Unknown error",
+  //     );
+  //     setError(true);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // const deletePinType = async (pinId, type) => {
+  //   //Validate function call
+  //   const id = validateId(pinId);
+  //   if (!checkPinExists(id)) return;
+
+  //   try {
+  //     setLoading(true);
+  //     setError(false);
+
+  //     //API call
+  //     const res = await api.delete(`/api/pins/${id}/types`, { type });
+
+  //     setPins((prev) => [...prev, res.data.pin]);
+  //     console.log("Update pin type removal success");
+  //   } catch (error) {
+  //     console.error(
+  //       error.response?.data?.error || error.message || "Unknown error",
+  //     );
+  //     setError(true);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   /*** HELPER FUNCTIONS ***/
   const checkPinExists = (pinId) => {
@@ -151,12 +185,12 @@ export function PinsProvider({ children }) {
     return pinExists;
   };
 
-  const findPin = (mapboxId) => {
+  const findPin = (pinId) => {
     //Check for parameters
-    if (!mapboxId) throw new Error("mapboxId missing");
+    if (!pinId) throw new Error("pinId missing");
 
     console.log(pins);
-    const foundPin = pins.find((pin) => pin.mapboxId === mapboxId);
+    const foundPin = pins.find((pin) => pin.id === pinId);
 
     return foundPin ? foundPin.id : null;
   };
@@ -168,9 +202,13 @@ export function PinsProvider({ children }) {
       throw new Error(`Error missing parameters `);
     }
 
-    const duplicateExists = pins.filter((pin) => pin.mapboxId === mapboxId);
+    // const duplicateExists = pins.filter((pin) => pin.mapboxId === mapboxId);
 
-    if (duplicateExists.length === 0) return null;
+    // if (duplicateExists.length === 0) return null;
+
+    const duplicateExists = pins.find((pin) => pin.mapboxId === mapboxId);
+
+    // if (duplicateExists.length === 0) return null;
 
     return duplicateExists;
   };
@@ -178,8 +216,15 @@ export function PinsProvider({ children }) {
   /*** USE EFFECTS ***/
 
   useEffect(() => {
-    loadPins();
-    console.log("pins in useEffect", pins);
+    // if (!user) return;
+
+    const fetchPins = async () => {
+      await loadPins();
+      //setInitialLoading(false);
+      console.log("pins in useEffect", pins);
+    };
+
+    fetchPins();
   }, []);
 
   return (
@@ -192,8 +237,11 @@ export function PinsProvider({ children }) {
         addPin,
         deletePin,
         mapBoxDuplicateCheck,
-        deletePinType,
-        addPinType,
+        updatePinType,
+        // deletePinType,
+        // addPinType,
+        initialLoading,
+        initialError,
       }}
     >
       {children}

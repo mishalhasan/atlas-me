@@ -1,5 +1,6 @@
 import { Menu, Dot } from "lucide-react";
 import SearchBar from "./SearchBar";
+import MenuDrawer from "../shared/MenuDrawer";
 
 function NavBar({ search }) {
   return (
@@ -12,7 +13,7 @@ function NavBar({ search }) {
           <SearchBar search={search} />
         </div>
 
-        <Menu className="flex-none text-white" size={20} />
+        <MenuDrawer />
       </div>
     </>
   );

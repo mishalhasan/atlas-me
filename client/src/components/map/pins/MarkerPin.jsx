@@ -9,13 +9,9 @@ export default function MarkerPin({ pin }) {
   let mapPin;
   if (pin?.types.includes("visited") && pin?.types.includes("wishlist")) {
     mapPin = <Pin type="visited" />;
-  }
-
-  if (pin?.types.includes("visited")) {
+  } else if (pin?.types.includes("visited")) {
     mapPin = <Pin type="visited" />;
-  }
-
-  if (pin?.types.includes("wishlist")) {
+  } else if (pin?.types.includes("wishlist")) {
     mapPin = <Pin type="wishlist" />;
   }
 

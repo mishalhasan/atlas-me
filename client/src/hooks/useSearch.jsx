@@ -1,4 +1,4 @@
-import { useEffect, useState, useDebugValue } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 
 export function useSearch(initialQuery = null) {
@@ -11,11 +11,6 @@ export function useSearch(initialQuery = null) {
   const [searchLocations, setSearchLocations] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [popupKey, setPopupKey] = useState(0);
-
-  // useDebugValue(`selectedLocation: ${selectedLocation}`);
-  // useDebugValue(`Error: ${errorMsg}`);
-  // useDebugValue(`Loadng: ${loading}`);
-  // useDebugValue(`Text: ${text}`);
 
   /*** Handler Functions ***/
   const fetchMapData = async (query) => {
@@ -64,16 +59,10 @@ export function useSearch(initialQuery = null) {
 
     if (input.length > 3) setQuery(input);
     if (input.length < 3) setSearchLocations([]);
-    console.log("Input: ", input);
   };
 
   /** Fully clears search UI */
   const handleClearSearch = () => {
-    // setText("");
-    // setQuery(null);
-    // setDebouncedQuery(null);
-    // setLoading(false);
-    // setSearchLocations([]);
     resetSearchState();
     setErrorMsg("");
   };
@@ -93,10 +82,6 @@ export function useSearch(initialQuery = null) {
     setQuery(null);
     setDebouncedQuery(null);
     const geoCodeLocations = await fetchMapData(text);
-    console.log("Inside searchsubmit");
-    //console.log(geoCodeLocations);
-    //console.log(typeof geoCodeLocations);
-    // console.log(Object.keys(geoCodeLocations));
     if (geoCodeLocations.length === 0) {
       setErrorMsg("No search results found");
       resetSearchState(); //clears
@@ -105,7 +90,6 @@ export function useSearch(initialQuery = null) {
       const newPopupKey = popupKey + 1;
       setPopupKey(newPopupKey);
       setSelectedLocation({ ...geoCodeLocations[0], popupKey: newPopupKey });
-      // setSelectedLocation(geoCodeLocations[0]);
       handleClearSearch();
     }
   };

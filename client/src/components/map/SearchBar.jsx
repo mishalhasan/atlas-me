@@ -14,20 +14,20 @@ function SearchBar({ search }) {
 
   console.log(searchLocations);
   return (
-    <div
-      id="search-layer"
-      className="fixed top-7 left-7  bg-white px-2 rounded-md"
-    >
+    <div id="search-layer" className=" bg-white px-2 rounded-md">
       <form onSubmit={handleOnSearchSubmit}>
-        <div id="search-wrapper" className="relative flex items-center">
+        <div
+          id="search-wrapper"
+          className=" min-[400px]:w-[50vw] w-[90vw] relative flex justify-between items-center"
+        >
           <Search
             className=" w-4.5 h-4.5 text-gray-500 hover:text-atlas-indigo"
             strokeWidth={2.45}
           />
           <input
             type="text"
-            placeholder="Search..."
-            className=" px-2 py-1 outline-none"
+            placeholder="Search place..."
+            className=" px-2 py-1 outline-none flex-1 min-w-0"
             value={text}
             onChange={handleOnSearchChange}
           />
@@ -35,7 +35,7 @@ function SearchBar({ search }) {
             <button
               type="button"
               onClick={handleClearSearch}
-              className="mx-1 cursor-pointer"
+              className="mx-1 cursor-pointer shrink-0"
             >
               <X size={18} />
             </button>
@@ -49,7 +49,7 @@ function SearchBar({ search }) {
             </div>
           )}
           {!errorMsg && searchLocations.length > 0 && (
-            <ul className="absolute top-full w-full left-0 text-sm bg-white rounded-md shadow-md">
+            <ul className="absolute top-full w-full left-0 text-sm bg-white rounded-md shadow-md ">
               {searchLocations.map((searchLocation) => (
                 <li
                   className="px-3 py-2 border-b last:border-b-0 hover:bg-gray-100 cursor-pointer"

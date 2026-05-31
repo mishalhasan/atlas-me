@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect, useDebugValue } from "react";
-//import "mapbox-gl/dist/mapbox-gl.css";
 import { usePins } from "./usePins";
 import { toast } from "sonner";
 export function usePopup(searchResult) {
@@ -9,14 +8,11 @@ export function usePopup(searchResult) {
     deletePin,
     updatePinType,
     // loading,
-    // error,
-    //mapBoxDuplicateCheck,
-    // deletePinType,
-    // addPinType,
+    error,
+    setError,
   } = usePins();
 
   const [showPopup, setShowPopup] = useState(false);
-  const [pinExists, setPinExists] = useState(false);
   //const [zoomComplete, setZoomComplete] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1.45);
 
@@ -57,10 +53,11 @@ export function usePopup(searchResult) {
   const handleCancel = () => {
     console.log("Cancel");
     setShowPopup(false);
+    setError(false);
   };
 
   /**
-   * Update
+   * Update pin based on user interaction
    */
   const handleUpdate = async (pinId, types) => {
     if (!pinId || !types) return;
@@ -74,7 +71,7 @@ export function usePopup(searchResult) {
   };
 
   /**
-   * Delete
+   * Delete pin based on user interaction
    */
   const handleDelete = async (pinId) => {
     if (!pinId) return;
@@ -99,7 +96,6 @@ export function usePopup(searchResult) {
 
       //Reset Popup States
       setShowPopup(false);
-      //setPinExists(false);
 
       console.log(zoomLevel[searchResult.type]);
       console.log("HELP");
@@ -111,36 +107,8 @@ export function usePopup(searchResult) {
       });
 
       setShowPopup(true);
-
-      // if (Object.values(zoomPossibleLevel).includes(zoomLevel)) {
-      //   console.log("exists!", zoomLevel);
-      // setShowPopup(true);
-
-      //   // if (mapBoxDuplicateCheck(searchResult.mapboxId)) {
-      //   //   console.log(true);
-      //   //   setPinExists(true);
-      //   // }
-      // }
     }
   }, [searchResult]);
-
-  // useEffect(() => {
-  //   const timer = setTimeout(() => {
-  //     console.log("zoomLeel in useEffect", zoomLevel);
-
-  //     if (Object.values(zoomPossibleLevel).includes(zoomLevel)) {
-  //       console.log("exists!", zoomLevel);
-  //       setShowPopup(true);
-
-  //       if (mapBoxDuplicateCheck(searchResult.mapboxId)) {
-  //         console.log(true);
-  //         setPinExists(true);
-  //       }
-  //     }
-  //   }, 300);
-
-  //   return () => clearTimeout(timer);
-  // }, [zoomLevel]);
 
   return {
     showPopup,
@@ -148,7 +116,6 @@ export function usePopup(searchResult) {
     mapRef,
     handleAddPin,
     handleCancel,
-    pinExists,
     handleDelete,
     handleUpdate,
   };

@@ -2,7 +2,9 @@ import GeoMap from "../components/map/GeoMap.jsx";
 import SearchBar from "../components/map/SearchBar.jsx";
 import { useSearch } from "../hooks/useSearch.jsx";
 import { usePins } from "@/hooks/usePins.jsx";
-import { Spinner } from "@/components/ui/spinner.jsx";
+import NavBar from "@/components/map/NavBar.jsx";
+import StatsPanel from "@/components/map/StatsPanel.jsx";
+import Legend from "@/components/map/Legend.jsx";
 
 function Map() {
   const search = useSearch();
@@ -22,8 +24,31 @@ function Map() {
     </div>
   ) : (
     <>
-      <GeoMap searchResult={search.selectedLocation} />;
-      <SearchBar search={search} />
+
+      <GeoMap
+        searchResult={search.selectedLocation}
+        hideControls={search.searchLocations.length > 0}
+      />
+      ;
+      <div className="fixed top-0 left-0 py-4 backdrop-blur-sm bg-black/5">
+        <NavBar search={search} />
+      </div>
+      <div className="fixed left-1/2 -translate-x-1/2 pr-3 z-10 top-12 min-[400px]:hidden m-2 ">
+        <SearchBar search={search} />
+      </div>
+      <div
+        className="fixed bottom-14 sm:bottom-4 left-1/2 -translate-x-1/2 px-5 rounded-md pb-2 pt-1 bg-black/5  backdrop-blur-md 
+                border border-white/10 shadow-lg max-[300px]:bottom-20"
+      >
+        <StatsPanel search={search} />
+      </div>
+      <div
+        className="fixed bottom-2 right-2 px-4 py-2 rounded-md 
+                bg-black/5 backdrop-blur-md 
+                 shadow-lg text-white max-[300px]:bottom-10 max-[300px]:left-1/2 max-[300px]:-translate-x-1/2"
+      >
+        <Legend />
+      </div>
     </>
   );
 }

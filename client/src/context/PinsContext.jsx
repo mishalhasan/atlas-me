@@ -130,54 +130,6 @@ export function PinsProvider({ children }) {
     }
   };
 
-  // const addPinType = async (pinId, type) => {
-  //   //Validate function call
-  //   const id = validateId(pinId);
-  //   if (!checkPinExists(id)) return;
-
-  //   try {
-  //     setLoading(true);
-  //     setError(false);
-
-  //     //API call
-  //     const res = await api.patch(`/api/pins/${id}/types`, { type });
-
-  //     setPins((prev) => [...prev, res.data.pin]);
-  //     console.log("Update pin type add success");
-  //   } catch (error) {
-  //     console.error(
-  //       error.response?.data?.error || error.message || "Unknown error",
-  //     );
-  //     setError(true);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // const deletePinType = async (pinId, type) => {
-  //   //Validate function call
-  //   const id = validateId(pinId);
-  //   if (!checkPinExists(id)) return;
-
-  //   try {
-  //     setLoading(true);
-  //     setError(false);
-
-  //     //API call
-  //     const res = await api.delete(`/api/pins/${id}/types`, { type });
-
-  //     setPins((prev) => [...prev, res.data.pin]);
-  //     console.log("Update pin type removal success");
-  //   } catch (error) {
-  //     console.error(
-  //       error.response?.data?.error || error.message || "Unknown error",
-  //     );
-  //     setError(true);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   /*** HELPER FUNCTIONS ***/
   const checkPinExists = (pinId) => {
     console.log(pins);
@@ -185,15 +137,15 @@ export function PinsProvider({ children }) {
     return pinExists;
   };
 
-  const findPin = (pinId) => {
-    //Check for parameters
-    if (!pinId) throw new Error("pinId missing");
+  // const findPin = (pinId) => {
+  //   //Check for parameters
+  //   if (!pinId) throw new Error("pinId missing");
 
-    console.log(pins);
-    const foundPin = pins.find((pin) => pin.id === pinId);
+  //   console.log(pins);
+  //   const foundPin = pins.find((pin) => pin.id === pinId);
 
-    return foundPin ? foundPin.id : null;
-  };
+  //   return foundPin ? foundPin.id : null;
+  // };
 
   /** Duplicate check for mapBox pin **/
   const mapBoxDuplicateCheck = (mapboxId) => {
@@ -202,13 +154,7 @@ export function PinsProvider({ children }) {
       throw new Error(`Error missing parameters `);
     }
 
-    // const duplicateExists = pins.filter((pin) => pin.mapboxId === mapboxId);
-
-    // if (duplicateExists.length === 0) return null;
-
     const duplicateExists = pins.find((pin) => pin.mapboxId === mapboxId);
-
-    // if (duplicateExists.length === 0) return null;
 
     return duplicateExists;
   };
@@ -230,7 +176,6 @@ export function PinsProvider({ children }) {
   return (
     <PinsContext.Provider
       value={{
-        // setPins,
         pins,
         loading,
         error,
@@ -238,10 +183,9 @@ export function PinsProvider({ children }) {
         deletePin,
         mapBoxDuplicateCheck,
         updatePinType,
-        // deletePinType,
-        // addPinType,
         initialLoading,
         initialError,
+        setError,
       }}
     >
       {children}

@@ -1,4 +1,7 @@
-import Map, { Popup, NavigationControl } from "react-map-gl";
+import Map, {
+  Popup,
+  NavigationControl,
+} from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { usePopup } from "@/hooks/usePopup";
 import AddPin from "./popup/AddPin";
@@ -6,28 +9,18 @@ import MarkerPin from "./pins/MarkerPin";
 import { usePins } from "@/hooks/usePins";
 import ManagePin from "./popup/ManagePin";
 
-function GeoMap({ searchResult }) {
+function GeoMap({ searchResult, hideControls }) {
   const {
     showPopup,
     setZoomLevel,
     mapRef,
     handleCancel,
     handleAddPin,
-    //pinExists,
     handleDelete,
     handleUpdate,
   } = usePopup(searchResult);
   const { pins, loading, error, mapBoxDuplicateCheck } = usePins();
-  //const matchedPin = mapBoxDuplicateCheck(searchResult?.mapboxId);
-
-  //const { addPin, deletePin, loading, error, mapBoxDuplicateCheck } = usePins();
-  // const { handleCancel, handleAddPin, showPopup, setZoomLevel, mapRef } =
-  //   usePopup({
-  //     addPin,
-  //     deletePin,
-  //     mapBoxDuplicateCheck,
-  //     searchResult,
-  //   });
+ 
 
   return (
     <Map
@@ -55,7 +48,8 @@ function GeoMap({ searchResult }) {
         },
       }}
     >
-      <NavigationControl />
+     {!hideControls
+      && <NavigationControl />} 
 
       {showPopup && (
         <Popup
@@ -89,7 +83,6 @@ function GeoMap({ searchResult }) {
           )}
         </Popup>
       )}
-
       {pins.length > 0 &&
         pins.map((pin) => <MarkerPin key={pin.id} pin={pin} />)}
     </Map>

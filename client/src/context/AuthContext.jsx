@@ -22,7 +22,6 @@ export function AuthProvider({ children }) {
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
       <Outlet />
-      {/* {children} */}
     </AuthContext.Provider>
   );
 }

@@ -34,3 +34,40 @@ export function validateId(id) {
 
   return parsedId;
 }
+
+/**
+ * Returns an array of pins, keeping only one pin per unique countryCode
+ * @param {Array} pins - array of pin objects
+ * @returns {Array} uniquePins - one pin per country
+ */
+export function getUniqueCountries(pins) {
+  const countriesDisplayed = {};
+  const uniquePins = [];
+
+  for (const pin of pins) {
+    if (!countriesDisplayed[pin.countryCode]) {
+      uniquePins.push(pin);
+      countriesDisplayed[pin.countryCode] = true;
+    }
+  }
+
+  return uniquePins;
+}
+
+export function getEmojiFlag(iso) {
+  if (!iso || iso.length !== 2) return "";
+
+  const letterOne = iso[0].toUpperCase().charCodeAt(0);
+  const letterTwo = iso[1].toUpperCase().charCodeAt(0);
+  const offsetOne = letterOne - "A".charCodeAt(0);
+  const offsetTwo = letterTwo - "A".charCodeAt(0);
+
+  //let emojiCode = 0x1f1e6 + offsetOne;
+  const codeOne = String.fromCodePoint(0x1f1e6 + offsetOne);
+  const codeTwo = String.fromCodePoint(0x1f1e6 + offsetTwo);
+
+  const emoji = codeOne + codeTwo;
+  return emoji;
+}
+
+

@@ -37,7 +37,7 @@ export default function App() {
         <Route path="/captured/:username" element={<Captured />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <Toaster />
+      <Toaster position="top-right" />
     </>
   );
 }

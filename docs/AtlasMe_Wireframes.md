@@ -363,8 +363,8 @@
 │         │ │  ATLASME    atlasme.app          │
 │         │ └─────────────────────┤           │
 │         │                       │           │
-│         │  ┌──┐  Your Name      │           │  ← Avatar + name
-│         │  │YO│  @username      │           │
+│         │  ┌──┐        │           │  ← Avatar + name
+│         │  │YO│   username      │           │
 │         │  └──┘                 │           │
 │         │                       │           │
 │         │  The Globetrotter     │           │  ← Playfair Display 700
@@ -379,8 +379,8 @@
 │         │  └─────┘└─────┘└─────┘│           │
 │         │                       │           │
 │         │  ┌─────────┐┌────────┐│           │
-│         │  │   41    ││🌍 Europe││           │
-│         │  │  pins   ││top reg ││           │
+│         │  │   41    ││Dreaming |           │
+│         │  │  pins   ││Italy 🇮🇹 ││           │
 │         │  └─────────┘└────────┘│           │
 │         │                       │           │
 │         │  ┌─────────────────┐  │           │

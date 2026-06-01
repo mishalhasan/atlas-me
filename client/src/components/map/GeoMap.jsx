@@ -1,7 +1,4 @@
-import Map, {
-  Popup,
-  NavigationControl,
-} from "react-map-gl";
+import Map, { Popup, NavigationControl } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { usePopup } from "@/hooks/usePopup";
 import AddPin from "./popup/AddPin";
@@ -20,7 +17,6 @@ function GeoMap({ searchResult, hideControls }) {
     handleUpdate,
   } = usePopup(searchResult);
   const { pins, loading, error, mapBoxDuplicateCheck } = usePins();
- 
 
   return (
     <Map
@@ -48,8 +44,7 @@ function GeoMap({ searchResult, hideControls }) {
         },
       }}
     >
-     {!hideControls
-      && <NavigationControl />} 
+      {!hideControls && <NavigationControl />}
 
       {showPopup && (
         <Popup

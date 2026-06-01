@@ -1,4 +1,13 @@
 const db = require("../models/initModels");
+const { getTravelRank } = require("../utils/calculations/personality.js");
+const {
+  getVisitedPins,
+  getWishlistPins,
+  getTotalCountries,
+  getTotalContinents,
+  percentWorld,
+  getRecentWish,
+} = require("../utils/calculations/stats.js");
 
 /**
  * Retrieve all pins of a specific user via public GET request.
@@ -36,15 +45,39 @@ exports.getPublicProfile = async (req, res) => {
         "name",
         "latitude",
         "longitude",
-        "type",
+        "types",
         "countryCode",
         "continent",
         "region",
+        "createdAt",
+        "id",
       ],
+      order: [["createdAt", "DESC"]],
     });
 
+    //Calculate Stats
+    const visitedPins = getVisitedPins(pins);
+    const wishlistPins = getWishlistPins(pins);
+
+    const totalCountries = getTotalCountries(visitedPins);
+    const totalContinents = getTotalContinents(visitedPins);
+    const percentOfWorld = percentWorld(visitedPins);
+    const recentWishPlace = getRecentWish(wishlistPins);
+
     //Return response back to client
-    return res.json({ username: user.username, count: pins.length, pins });
+    return res.json({
+      username: user.username,
+      count: pins.length,
+      stats: {
+        personality: getTravelRank(totalCountries, totalContinents),
+        totalPins: pins.length,
+        countries: totalCountries,
+        continents: totalContinents,
+        percentOfWorld,
+        recentWishPlace,
+      },
+      pins,
+    });
   } catch (error) {
     console.error("Get all pins public request failed:", error);
     res.status(500).json({ error: "Server error. Failed to retrieve pins." });

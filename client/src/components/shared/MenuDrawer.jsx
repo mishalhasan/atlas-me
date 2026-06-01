@@ -1,7 +1,7 @@
-import { Map, ChartColumn, Sparkles, Menu, X, LogOut, Dot, HomeIcon, Home } from "lucide-react";
+import { Map, ChartColumn, Sparkles, Menu, X, LogOut, Dot, Home } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 import { useStats } from "@/hooks/useStats";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,6 @@ import {
 function MenuDrawer() {
   const { user, handleSignOut } = useAuth();
   const { countriesCount, totalPins } = useStats();
-  const location = useLocation();
   const [open, setOpen] = useState(false);
 
   return (
@@ -29,7 +28,7 @@ function MenuDrawer() {
       </DrawerTrigger>
 
       <DrawerContent className="max-[400px]:data-[vaul-drawer-direction=right]:w-full">
-        <DrawerHeader className="border-b-1 border-gray-200">
+        <DrawerHeader className="border-b border-gray-200">
           <div className="flex items-center gap-2.5 mt-5 ">
             <div className="w-12 h-12 flex items-center justify-center rounded-full bg-atlas-amber/10 border-atlas-amber border">
               <span className="font-medium">
@@ -65,7 +64,7 @@ function MenuDrawer() {
         >
           <Link
             to="/"
-            className={`flex items-center gap-2 ${location.pathname === "/" ? "text-atlas-indigo" : "text-foreground"}`}
+            className="flex items-center gap-2 text-foreground"
             onClick={() => setOpen(false)}
           >
             <Home size={20} strokeWidth={1.5} />
@@ -73,7 +72,7 @@ function MenuDrawer() {
           </Link>
           <Link
             to="/map"
-            className={`flex items-center gap-2 ${location.pathname === "/map" ? "text-atlas-indigo" : "text-foreground"}`}
+            className="flex items-center gap-2 text-foreground"
             onClick={() => setOpen(false)}
           >
             <Map size={20} strokeWidth={1.5} />
@@ -81,7 +80,7 @@ function MenuDrawer() {
           </Link>
           <Link
             to="/stats"
-            className={`flex items-center gap-2 ${location.pathname === "/stats" ? "text-atlas-indigo" : "text-foreground"}`}
+            className="flex items-center gap-2 text-foreground"
             onClick={() => setOpen(false)}
           >
             <ChartColumn size={20} strokeWidth={1.5} />
@@ -89,7 +88,7 @@ function MenuDrawer() {
           </Link>
           <Link
             to="/captured"
-            className={`flex pt-5 items-center gap-2 ${location.pathname === "/captured" ? "text-atlas-indigo" : "text-atlas-amber"}`}
+            className="flex pt-5 items-center gap-2 text-atlas-amber"
             onClick={() => setOpen(false)}
           >
             <Sparkles size={20} strokeWidth={1.5} />
@@ -97,11 +96,13 @@ function MenuDrawer() {
           </Link>
         </nav>
 
-        <DrawerFooter className="border-t-1 border-gray-200">
+        <DrawerFooter className="border-t border-gray-200">
           <DrawerClose asChild>
             <Button
               //   className="border-atlas-indigo hover:bg-atlas-indigo hover:text-white"
-              className="mr-auto "
+              //   className=" hover:text-atlas-indigo"
+
+              className="mr-auto hover:text-atlas-indigo"
               variant="ghost"
               onClick={handleSignOut}
             >

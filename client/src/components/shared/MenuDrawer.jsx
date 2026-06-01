@@ -1,4 +1,13 @@
-import { Map, ChartColumn, Sparkles, Menu, X, LogOut, Dot, Home } from "lucide-react";
+import {
+  Map,
+  ChartColumn,
+  Sparkles,
+  Menu,
+  X,
+  LogOut,
+  Dot,
+  Home,
+} from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 import { useStats } from "@/hooks/useStats";
 import { Link } from "react-router-dom";
@@ -87,7 +96,7 @@ function MenuDrawer() {
             <span>Stats</span>
           </Link>
           <Link
-            to="/captured"
+            to={`/captured/${user.username}`}
             className="flex pt-5 items-center gap-2 text-atlas-amber"
             onClick={() => setOpen(false)}
           >

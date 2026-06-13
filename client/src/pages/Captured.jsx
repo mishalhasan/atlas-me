@@ -49,7 +49,7 @@ function Captured() {
     >
       {/* [@media(max-width:420px)]:rounded-sm min-w-[420px]:max-h[95dvh]
       overflow-hidden sm:max-h-[90dvh] */}
-      <Card className="w-[100%] max-w-[420px] max-h-[85dvh] min-w-[300px]:min-w-[320px] [@media(max-width:420px)]:rounded-sm bg-[#f5ead6] shadow-md flex flex-col pt-0 items-center justify-center z-10 ">
+      <Card className="w-screen [@media(min-width:620px)]:max-w-[420px] max-h-[100dvh] [@media(min-width:620px)]:max-h-[90dvh] min-w-[300px]:min-w-[320px] rounded-sm bg-[#f5ead6] shadow-md flex flex-col pt-0 items-center justify-center z-10 ">
         <Map
           ref={mapRef}
           mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
@@ -87,11 +87,11 @@ function Captured() {
               Explored {stats?.countries} countries across {stats?.continents}{" "}
               continents.
             </p>
-          </div>
-
+          </div>{" "}
+          {/* grid-cols-1 */}
           <div
             id="user-stats"
-            className="max-w-[300px]:flex max-w-[300px]:flex-wrap grid grid-rows-[1fr_1fr] gap-1 [@media(min-width:300px)]:gap-2"
+            className=" [@media(max-width:300px)]:flex [@media(max-width:300px)]:flex-col grid grid-rows-[1fr_1fr] gap-1 [@media(min-width:300px)]:gap-2"
           >
             <div
               id="stats-r1"
@@ -157,12 +157,13 @@ function Captured() {
             <Share />
             Share your Atlas
           </Button>
-
-          <footer className="mt-3 text-center">
-            <div className="flex justify-center items-center">
-              <Sparkles className="text-atlas-amber" size={12} />
-              <span>AtlasMe Captured</span>
-              <Dot size={12} />
+          <footer className="mt-3 flex flex-col items-center gap-2">
+            <div className="flex [@media(max-width:300px)]:flex-col [@media(max-width:300px)]:gap-1 justify-center items-center">
+              <div className="flex justify-center items-center gap-1">
+                <Sparkles className="text-atlas-amber" size={12} />
+                <span className="">AtlasMe Captured</span>
+              </div>
+              <Dot size={12} className="[@media(max-width:300px)]:hidden" />
               <Link
                 to="/"
                 className="text-atlas-indigo hover:border-b-atlas-indigo hover:border-b cursor-pointer"

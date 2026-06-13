@@ -79,7 +79,7 @@ module.exports = (sequelize, DataTypes) => {
               "Europe",
               "North America",
               "South America",
-              "Australia",
+              "Oceania",
             ],
           ],
         },

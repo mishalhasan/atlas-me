@@ -80,19 +80,25 @@ const PORT = process.env.PORT || 3000;
 
 //Connect DB & start server
 const startServer = async () => {
-  console.log("\n🔄 Connecting to DB...");
+  try {
+    console.log("\n🔄 Connecting to DB...");
 
-  await testConnection();
-  console.log("\n🔄 Syncing DB...");
+    await testConnection();
+    console.log("\n🔄 Syncing DB...");
 
-  await db.sequelize.sync({ alter: true });
-  console.log("✅ Tables synced");
+    await db.sequelize.sync({ alter: true });
+    console.log("✅ Tables synced");
 
-  //Server Status
-  app.listen(PORT, () => {
-    console.log(`\nAtlasMe API`);
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
+    //Server Status
+    app.listen(PORT, () => {
+      console.log(`\nAtlasMe API`);
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  } catch (err) {
+    console.error("❌ Failed to start server:", err.message);
+    console.err(err);
+    process.exit(1);
+  }
 };
 
 startServer();
